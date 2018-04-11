@@ -99,6 +99,12 @@
 			"revisionTime": "2018-04-04T17:59:11Z"
 		},
 		{
+			"checksumSHA1": "W/pYxFe8/FHT10/wulwesJsOoUw=",
+			"path": "google.golang.org/appengine/cloudsql",
+			"revision": "0a24098c0ec68416ec050f567f75df563d6b231e",
+			"revisionTime": "2018-04-05T22:03:34Z"
+		},
+		{
 			"checksumSHA1": "q190bL03wQok3wVwYmMub2XhOiU=",
 			"path": "gopkg.in/go-playground/validator.v8",
 			"revision": "5f1438d3fca68893a817e4a66806cea46a9e4ebf",
