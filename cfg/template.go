@@ -12,16 +12,11 @@ var (
 // InitTmpl 初始化模板, 从硬盘中加载HTML.
 func InitTmpl() {
 	filename := os.Getenv("HOME_TPL")
-	if filename == "" {
-		panic("Invalid env $HOME_TPL.")
-	}
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
 	tmpl = data
-
-	return
 }
 
 // HomeTmpl 获取首页模板.

@@ -18,17 +18,17 @@ type Member struct {
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 
-	m *map[string]string
+	m *map[string]map[string]string
 }
 
 // EduMajor 获取主修专业账号
-func (member *Member) EduMajor() (sid, psw string) {
+func (member *Member) EduMajor(school string) (sid, psw string) {
 	if member.m == nil {
-		member.m = new(map[string]string)
+		member.m = new(map[string]map[string]string)
 		json.Unmarshal([]byte(member.Edu), member.m)
 	}
-	sid, _ = (*member.m)["sid"]
-	psw, _ = (*member.m)["psw"]
+	sid, _ = (*member.m)[school]["sid"]
+	psw, _ = (*member.m)[school]["psw"]
 
 	psw = utils.Decrypt(psw)
 
@@ -36,13 +36,13 @@ func (member *Member) EduMajor() (sid, psw string) {
 }
 
 // EduSecond 获取辅修专业账号
-func (member *Member) EduSecond() (sid2, psw2 string) {
+func (member *Member) EduSecond(school string) (sid2, psw2 string) {
 	if member.m == nil {
-		member.m = new(map[string]string)
+		member.m = new(map[string]map[string]string)
 		json.Unmarshal([]byte(member.Edu), member.m)
 	}
-	sid2, _ = (*member.m)["sid2"]
-	psw2, _ = (*member.m)["psw2"]
+	sid2, _ = (*member.m)[school]["sid2"]
+	psw2, _ = (*member.m)[school]["psw2"]
 
 	psw2 = utils.Decrypt(psw2)
 
