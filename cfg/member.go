@@ -7,18 +7,33 @@ import (
 	"github.com/Lofanmi/v3nayou/utils"
 )
 
+// WechatAuth 微信授权信息
+type WechatAuth struct {
+	OpenID     string   `json:"openid"`
+	Nickname   string   `json:"nickname"`
+	Sex        int      `json:"sex"`
+	Province   string   `json:"province"`
+	City       string   `json:"city"`
+	Country    string   `json:"country"`
+	HeadImgURL string   `json:"headimgurl"`
+	Privilege  []string `json:"privilege"`
+	UnionID    string   `json:"unionid"`
+}
+
 // Member 会员信息
 type Member struct {
-	ID        int    `json:"id"`
-	OpenID    string `json:"openid"`
-	Name      string `json:"name"`
-	Tel       string `json:"tel"`
-	Email     string `json:"email"`
-	Edu       string `json:"edu"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	ID         int    `json:"id"`
+	OpenID     string `json:"openid"`
+	Name       string `json:"name"`
+	Tel        string `json:"tel"`
+	Email      string `json:"email"`
+	Edu        string `json:"edu"`
+	WechatAuth string `json:"wechatauth"`
+	CreatedAt  string `json:"created_at"`
+	UpdatedAt  string `json:"updated_at"`
 
 	m *map[string]map[string]string
+	w *WechatAuth
 }
 
 // EduMajor 获取主修专业账号
@@ -46,6 +61,20 @@ func (member *Member) EduSecond(school string) (sid2, psw2 string) {
 
 	psw2 = utils.Decrypt(psw2)
 
+	return
+}
+
+// WechatAuthObj 获取微信授权信息
+func (member *Member) WechatAuthObj() (result *WechatAuth) {
+	result = nil
+	if member.w != nil {
+		result = member.w
+	} else if member.WechatAuth != "" {
+		json.Unmarshal([]byte(member.WechatAuth), result)
+		if result != nil {
+			member.w = result
+		}
+	}
 	return
 }
 
