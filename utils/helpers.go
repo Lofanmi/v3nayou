@@ -92,3 +92,8 @@ func GinJSONData(code int, data interface{}, message string) gin.H {
 		"message": message,
 	}
 }
+
+// SetCookie 设置Cookie
+func SetCookie(c *gin.Context, name, value string, maxAge int) {
+	c.SetCookie(name, value, maxAge, "/", "", false, true)
+}

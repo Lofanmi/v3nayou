@@ -70,8 +70,9 @@ func (member *Member) WechatAuthObj() (result *WechatAuth) {
 	if member.w != nil {
 		result = member.w
 	} else if member.WechatAuth != "" {
-		json.Unmarshal([]byte(member.WechatAuth), result)
-		if result != nil {
+		result = new(WechatAuth)
+		err := json.Unmarshal([]byte(member.WechatAuth), result)
+		if err == nil {
 			member.w = result
 		}
 	}
