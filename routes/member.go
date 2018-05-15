@@ -24,26 +24,33 @@ func Member(c *gin.Context) {
 	member := c.MustGet("member").(*cfg.Member)
 	school := c.MustGet("school").(string)
 	// 校验用户输入
-	m, err := validate(c)
+	m, err := validate(c, member)
 	if err != nil {
 		output(c, err.Error(), -1, nil)
 		return
 	}
-	// 校验短信验证码
-	err = validateTel(c, m["tel"])
-	if err != nil {
-		output(c, err.Error(), -1, nil)
-		return
-	}
-	err = validateCode(c, m["tcode"])
-	if err != nil {
-		output(c, err.Error(), -1, nil)
-		return
-	}
-	err = validateExpire(c)
-	if err != nil {
-		output(c, err.Error(), -1, nil)
-		return
+	// 如果需要校验手机号
+	if m["tcode"] != "" {
+		// 校验短信验证码
+		err = validateTel(c, m["tel"])
+		if err != nil {
+			output(c, err.Error(), -1, nil)
+			return
+		}
+		err = validateCode(c, m["tcode"])
+		if err != nil {
+			output(c, err.Error(), -1, nil)
+			return
+		}
+		err = validateExpire(c)
+		if err != nil {
+			output(c, err.Error(), -1, nil)
+			return
+		}
+		// 删除短信验证码的cookie
+		utils.SetCookie(c, "t", "", -1)
+		utils.SetCookie(c, "c", "", -1)
+		utils.SetCookie(c, "e", "", -1)
 	}
 	// 登录验证
 	name, err = tryLogin(m["sid"], m["psw"], "(主修)")
@@ -64,17 +71,20 @@ func Member(c *gin.Context) {
 		output(c, err.Error(), -1, nil)
 		return
 	}
-	// 删除短信验证码的cookie
-	utils.SetCookie(c, "t", "", -1)
-	utils.SetCookie(c, "c", "", -1)
-	utils.SetCookie(c, "e", "", -1)
-
 	// 提交成功
 	output(c, "提交成功", 0, nil)
 	return
 }
 
-func validate(c *gin.Context) (m map[string]string, err error) {
+// needCheckTcode 如果用户不提交手机, 或手机与数据库不一致, 则需要检查校验码, 否则不检查
+func needCheckTcode(inputTel string, m *cfg.Member) bool {
+	if inputTel == "" {
+		return true
+	}
+	return inputTel != m.Tel
+}
+
+func validate(c *gin.Context, member *cfg.Member) (m map[string]string, err error) {
 	var (
 		tel, tcode, email, sid, psw, sid2, psw2 string
 	)
@@ -88,15 +98,19 @@ func validate(c *gin.Context) (m map[string]string, err error) {
 		return nil, err
 	}
 	m["tel"] = tel
-	// 短信验证码
-	tcode, err = checkEmpty(c.PostForm("tcode"), "短信验证码")
-	if err != nil {
-		return nil, err
+	if needCheckTcode(tel, member) {
+		// 短信验证码
+		tcode, err = checkEmpty(c.PostForm("tcode"), "短信验证码")
+		if err != nil {
+			return nil, err
+		}
+		if err = checkTcode(tcode); err != nil {
+			return nil, err
+		}
+		m["tcode"] = tcode
+	} else {
+		m["tcode"] = ""
 	}
-	if err = checkTcode(tcode); err != nil {
-		return nil, err
-	}
-	m["tcode"] = tcode
 	// 邮箱
 	email, err = checkEmpty(c.PostForm("email"), "邮箱")
 	if err != nil {

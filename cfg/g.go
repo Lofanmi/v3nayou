@@ -32,6 +32,7 @@ func LoadEnv() {
 		"WECHAT_APPID",
 		"WECHAT_APPSECRET",
 		"SMS_APIKEY",
+		"APP_KEY",
 	}
 
 	for _, key := range must {

@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/axgle/mahonia"
@@ -67,12 +69,26 @@ func StrClean(s string) string {
 
 // Encrypt 字符串加密
 func Encrypt(s string) string {
-	return s
+	key := []byte(os.Getenv("APP_KEY"))
+	bytes := []byte(s)
+	r, err := GenEncrypt(bytes, key)
+	if err != nil {
+		r = ""
+	}
+	fmt.Printf("%s => %s", s, r)
+	return r
 }
 
 // Decrypt 字符串解密
 func Decrypt(s string) string {
-	return s
+	key := []byte(os.Getenv("APP_KEY"))
+	r := ""
+	bytes, err := GenDecrypt(s, key)
+	if err == nil {
+		r = string(bytes)
+	}
+	fmt.Printf("%s <= %s", r, s)
+	return r
 }
 
 // GetFullURL 获取
