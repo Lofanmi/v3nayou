@@ -21,7 +21,8 @@ func Home(c *gin.Context) {
 		school = ""
 	}
 	if school == "" {
-		// 非法请求
+		c.JSON(http.StatusInternalServerError, nil)
+		c.Abort()
 		return
 	}
 	utils.SetCookie(c, "school", school, 3600*24*365*5)

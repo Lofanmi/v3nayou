@@ -11,8 +11,6 @@ import (
 const (
 	// TimeLayout 时间格式化
 	TimeLayout = "2006-01-02 15:04:05"
-	// MessageSuccess 成功消息
-	MessageSuccess = "success"
 )
 
 // LoadEnv 加载环境变量文件, 并检查必填的环境变量
@@ -24,15 +22,14 @@ func LoadEnv() {
 
 	must := []string{
 		"DB_DSN",
-		"TEST_SID",
-		"TEST_PSW",
+		"APP_KEY",
+		"APP_HOST",
+		"SMS_APIKEY",
 		"HOME_TPL",
-		"ADMIN_USER",
-		"ADMIN_PASS",
 		"WECHAT_APPID",
 		"WECHAT_APPSECRET",
-		"SMS_APIKEY",
-		"APP_KEY",
+		"TEST_SID",
+		"TEST_PSW",
 	}
 
 	for _, key := range must {

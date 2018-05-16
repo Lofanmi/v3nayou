@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -16,72 +17,79 @@ import (
 )
 
 // SchoolMiddleware 学校中间件
-func SchoolMiddleware(c *gin.Context) {
-	school, _ := c.Cookie("school")
-	if school == "" || (school != "gzhu" && school != "sysu") {
-		// 错误页: 访问出错, 请从微信公众号进入
-		c.Set("school", "[empty]")
+func SchoolMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		school, _ := c.Cookie("school")
+		if school == "" || (school != "gzhu" && school != "sysu") {
+			// 访问出错, 请从微信公众号进入
+			c.JSON(http.StatusNotFound, utils.GinJSONData(404, nil, "访问出错, 请从微信公众号进入"))
+			c.Abort()
+			return
+		}
+		c.Set("school", school)
 		c.Next()
+	}
+}
+
+// WechatMiddleware 微信登录中间件
+func WechatMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var (
+			member       *cfg.Member
+			openid, auth string
+			err          error
+		)
+
+		member, _ = loadFromCookie(c)
+
+		if member == nil || member.WechatAuthObj() == nil {
+			if c.GetHeader("X-Requested-With") == "XMLHttpRequest" {
+				c.JSON(http.StatusForbidden, nil)
+				c.Abort()
+				return
+			}
+			code := c.Query("code")
+			if code == "" {
+				c.Redirect(http.StatusFound, getRedirectURL(c))
+				c.Abort()
+				return
+			}
+			openid, auth, err = getWechatAuth(code)
+			if err != nil {
+				c.Redirect(http.StatusFound, getRedirectURL(c))
+				c.Abort()
+				return
+			}
+			member, err = storeMember(openid, auth)
+			if err != nil {
+				c.Redirect(http.StatusFound, getRedirectURL(c))
+				c.Abort()
+				return
+			}
+		}
+
+		if openid != "" {
+			o := utils.Encrypt(openid)
+			utils.SetCookie(c, "o", o, 3600*24*365*5)
+		}
+		c.Set("member", member)
+		c.Next()
+
 		return
 	}
-	c.Set("school", school)
-	c.Next()
 }
 
 func loadFromCookie(c *gin.Context) (*cfg.Member, error) {
 	o, _ := c.Cookie("o")
-	o = utils.Decrypt(o)
-	return getMemberByOpenID(o)
-}
-
-// WechatMiddleware 微信登录中间件
-func WechatMiddleware(c *gin.Context) {
-	var (
-		member       *cfg.Member
-		openid, auth string
-		err          error
-	)
-
-	member, _ = loadFromCookie(c)
-
-	if member == nil || member.WechatAuthObj() == nil {
-		if c.GetHeader("X-Requested-With") == "XMLHttpRequest" {
-			c.JSON(http.StatusForbidden, nil)
-			return
-		}
-		code := c.Query("code")
-		if code == "" {
-			c.Redirect(http.StatusFound, getRedirectURL(c))
-			return
-		}
-		openid, auth, err = getWechatAuth(code)
-		if err != nil {
-			c.Redirect(http.StatusFound, getRedirectURL(c))
-			return
-		}
-		member, err = storeMember(openid, auth)
-		if err != nil {
-			c.Redirect(http.StatusFound, getRedirectURL(c))
-			return
-		}
-		c.JSON(http.StatusInternalServerError, nil)
-		return
-	}
-
-	if openid != "" {
-		utils.SetCookie(c, "o", openid, 3600*24*365*5)
-	}
-	c.Set("member", member)
-	c.Next()
-
-	return
+	return getMemberByOpenID(utils.Decrypt(o))
 }
 
 func getRedirectURL(c *gin.Context) string {
+	u := "http://" + os.Getenv("APP_HOST") + "/school/" + c.Param("id")
 	return fmt.Sprintf(
 		"https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect",
 		os.Getenv("WECHAT_APPID"),
-		utils.GetFullURL(c.Request),
+		url.QueryEscape(u),
 	)
 }
 

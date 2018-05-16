@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"strings"
 
@@ -75,7 +74,9 @@ func Encrypt(s string) string {
 	if err != nil {
 		r = ""
 	}
-	fmt.Printf("%s => %s", s, r)
+	if os.Getenv("GIN_MODE") != "release" {
+		fmt.Printf("%s => %s\n", s, r)
+	}
 	return r
 }
 
@@ -87,17 +88,10 @@ func Decrypt(s string) string {
 	if err == nil {
 		r = string(bytes)
 	}
-	fmt.Printf("%s <= %s", r, s)
-	return r
-}
-
-// GetFullURL 获取
-func GetFullURL(r *http.Request) string {
-	scheme := "http://"
-	if r.TLS != nil {
-		scheme = "https://"
+	if os.Getenv("GIN_MODE") != "release" {
+		fmt.Printf("%s <= %s\n", r, s)
 	}
-	return strings.Join([]string{scheme, r.Host, r.RequestURI}, "")
+	return r
 }
 
 // GinJSONData 返回统一的JSON响应数据

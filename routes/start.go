@@ -79,17 +79,12 @@ func Start(c *gin.Context) {
 	m["others_icons"] = config(school + ".icons.others")
 	// 广告位
 	m["ads"] = config(school + ".ads")
-	// 文章
-	// TODO: 后期有时间再迁移到同一张数据表, 现在先调API吧
+	// TODO: 文章列表
 	// m["articles"] = []map[string]string{}
 	// schoolID := "1"
 	// if school == "sysu" {
 	// 	schoolID = "7"
 	// }
-	// _, body, _ := gorequest.New().Get("http://m.nayou.finded.net/api/articles/" + schoolID).EndBytes()
-	// articles := []map[string]interface{}{}
-	// json.Unmarshal(body, &articles)
-	// m["articles"] = articles
 	m["articles"] = []map[string]interface{}{}
 
 	// 友情链接
@@ -109,7 +104,7 @@ func Start(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, utils.GinJSONData(http.StatusOK, m, cfg.MessageSuccess))
+	c.JSON(http.StatusOK, utils.GinJSONData(http.StatusOK, m, "成功拉取数据"))
 
 	return
 }

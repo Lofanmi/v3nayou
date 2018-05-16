@@ -32,7 +32,7 @@ func UCenter(c *gin.Context) {
 	// 头像
 	m["headimgurl"] = member.WechatAuthObj().HeadImgURL
 
-	c.JSON(http.StatusOK, utils.GinJSONData(http.StatusOK, m, cfg.MessageSuccess))
+	c.JSON(http.StatusOK, utils.GinJSONData(http.StatusOK, m, "获取个人信息成功"))
 
 	return
 }
