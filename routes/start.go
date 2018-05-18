@@ -38,7 +38,7 @@ var (
 			map[string]string{"name": "哪有", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzA5NDQ1MTkyNA==#wechat_webview_type=1&wechat_redirect"},
 			map[string]string{"name": "有独", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzA5NTg5NzExMg==#wechat_webview_type=1&wechat_redirect"},
 			map[string]string{"name": "种草时间", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzI3NTA4MDQzMw==#wechat_webview_type=1&wechat_redirect"},
-			map[string]string{"name": "关于我们", "link": "#"},
+			map[string]string{"name": "关于我们", "link": "http://m.tool.finded.net/index.php?m=Home&c=Article&a=index&id=42"},
 		},
 		// 中大
 		"sysu.name":       "中山大学",
@@ -64,7 +64,7 @@ var (
 			map[string]string{"name": "哪有", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzA5NDQ1MTkyNA==#wechat_webview_type=1&wechat_redirect"},
 			map[string]string{"name": "有独", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzA5NTg5NzExMg==#wechat_webview_type=1&wechat_redirect"},
 			map[string]string{"name": "种草时间", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzI3NTA4MDQzMw==#wechat_webview_type=1&wechat_redirect"},
-			map[string]string{"name": "关于我们", "link": "#"},
+			map[string]string{"name": "关于我们", "link": "http://m.tool.finded.net/index.php?m=Home&c=Article&a=index&id=42"},
 		},
 	}
 )
