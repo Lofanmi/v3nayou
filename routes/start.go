@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/Lofanmi/v3nayou/cfg"
@@ -79,13 +81,9 @@ func Start(c *gin.Context) {
 	m["others_icons"] = config(school + ".icons.others")
 	// 广告位
 	m["ads"] = config(school + ".ads")
-	// TODO: 文章列表
-	// m["articles"] = []map[string]string{}
-	// schoolID := "1"
-	// if school == "sysu" {
-	// 	schoolID = "7"
-	// }
-	m["articles"] = []map[string]interface{}{}
+	// 文章列表
+	articles, _ := getArticlesFromDB(school)
+	m["articles"] = articles
 
 	// 友情链接
 	m["links"] = config(school + ".links")
@@ -121,4 +119,47 @@ func config(key string) interface{} {
 	v, _ := copy[key]
 
 	return v
+}
+
+func getArticlesFromDB(school string) (result []map[string]interface{}, err error) {
+	var (
+		rows                               *sql.Rows
+		title, abstract, cover, link, date string
+		id, atype                          int
+	)
+
+	if school == "gzhu" {
+		school = "1"
+	} else if school == "sysu" {
+		school = "7"
+	}
+
+	db := cfg.GetDB()
+
+	rows, err = db.Query("SELECT id,title,abstract,cover,link,date,atype FROM `articles` WHERE `school` = ? AND `status` = 1 ORDER BY `sort`", school)
+	defer rows.Close()
+	if err != nil {
+		return
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&id, &title, &abstract, &cover, &link, &date, &atype)
+		if err != nil {
+			return
+		}
+		if atype == 1 {
+			link = fmt.Sprintf("http://m.tool.finded.net/index.php?c=Article&id=%d", id)
+		}
+		m := map[string]interface{}{
+			"id":       id,
+			"title":    title,
+			"abstract": abstract,
+			"cover":    cover,
+			"link":     link,
+			"date":     date,
+		}
+		result = append(result, m)
+	}
+
+	return
 }
