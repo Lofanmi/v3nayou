@@ -76,11 +76,8 @@ func Member(c *gin.Context) {
 	return
 }
 
-// needCheckTcode 如果用户不提交手机, 或手机与数据库不一致, 则需要检查校验码, 否则不检查
+// needCheckTcode 如果用户不提交的手机与数据库不一致, 则需要检查校验码, 否则不检查
 func needCheckTcode(inputTel string, m *cfg.Member) bool {
-	if inputTel == "" {
-		return true
-	}
 	return inputTel != m.Tel
 }
 
@@ -91,11 +88,10 @@ func validate(c *gin.Context, member *cfg.Member) (m map[string]string, err erro
 	m = make(map[string]string)
 	// 手机号
 	tel, err = checkEmpty(c.PostForm("tel"), "手机号")
-	if err != nil {
-		return nil, err
-	}
-	if err = checkTel(tel); err != nil {
-		return nil, err
+	if err == nil {
+		if err = checkTel(tel); err != nil {
+			return nil, err
+		}
 	}
 	m["tel"] = tel
 	if needCheckTcode(tel, member) {
