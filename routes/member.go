@@ -92,6 +92,8 @@ func validate(c *gin.Context, member *cfg.Member) (m map[string]string, err erro
 		if err = checkTel(tel); err != nil {
 			return nil, err
 		}
+	} else {
+		tel = ""
 	}
 	m["tel"] = tel
 	if needCheckTcode(tel, member) {
@@ -109,11 +111,12 @@ func validate(c *gin.Context, member *cfg.Member) (m map[string]string, err erro
 	}
 	// 邮箱
 	email, err = checkEmpty(c.PostForm("email"), "邮箱")
-	if err != nil {
-		return nil, err
-	}
-	if err = checkEmail(email); err != nil {
-		return nil, err
+	if err == nil {
+		if err = checkEmail(email); err != nil {
+			return nil, err
+		}
+	} else {
+		email = ""
 	}
 	m["email"] = email
 	// 学号(主修专业)
