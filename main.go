@@ -3,12 +3,11 @@ package main
 import (
 	"github.com/Lofanmi/v3nayou/cfg"
 	"github.com/Lofanmi/v3nayou/routes"
-
-	"github.com/gin-gonic/gin"
+	// "github.com/gin-gonic/gin"
 )
 
 func main() {
-	gin.DisableConsoleColor()
+	// gin.DisableConsoleColor()
 
 	cfg.LoadEnv()
 	cfg.InitTmpl()

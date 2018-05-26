@@ -87,7 +87,7 @@ func sendsms(tel, code string) error {
 	result := make(map[string]interface{})
 	json.Unmarshal(body, &result)
 
-	switch result["code"].(int) {
+	switch int(result["code"].(float64)) {
 	case 0:
 		return nil
 	case 3:
