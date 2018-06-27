@@ -32,7 +32,7 @@ var (
 			map[string]string{"name": "错误反馈", "link": "bug", "icon": "/static/icons/bug.png"},
 		},
 		"gzhu.ads": []map[string]string{
-			map[string]string{"name": "如何正确使用哪有", "link": "http://m.tool.finded.net/index.php?m=Home&c=Article&a=index&id=56", "img": "http://m.tool.finded.net/uploads/ads/529de50d95a28442dd5718532ba432835c144588.jpg"},
+			map[string]string{"name": "实时公交", "link": "http://m.tool.finded.net/index.php?m=Bus", "img": "http://m.tool.finded.net/uploads/ads/bus.jpg"},
 		},
 		"gzhu.links": []map[string]string{
 			map[string]string{"name": "哪有", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzA5NDQ1MTkyNA==#wechat_webview_type=1&wechat_redirect"},
@@ -58,7 +58,7 @@ var (
 			map[string]string{"name": "错误反馈", "link": "bug", "icon": "/static/icons/bug.png"},
 		},
 		"sysu.ads": []map[string]string{
-			map[string]string{"name": "种草时间", "link": "http://mp.weixin.qq.com/s?__biz=MzI3NTA4MDQzMw==&mid=2649722125&idx=1&sn=20fee8d2821faac6b752435d939738b4#rd", "img": "http://m.tool.finded.net/uploads/ads/5076857456ccccd9f2167774245a98f31f4b2e4c.jpg"},
+			map[string]string{"name": "实时公交", "link": "http://m.tool.finded.net/index.php?m=Bus", "img": "http://m.tool.finded.net/uploads/ads/bus.jpg"},
 		},
 		"sysu.links": []map[string]string{
 			map[string]string{"name": "哪有", "link": "http://mp.weixin.qq.com/mp/getmasssendmsg?__biz=MzA5NDQ1MTkyNA==#wechat_webview_type=1&wechat_redirect"},
